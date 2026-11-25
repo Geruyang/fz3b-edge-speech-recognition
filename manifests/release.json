@@ -1,0 +1,39 @@
+{
+  "layer_id": "0x51E36A2FAFB04A9B68924206",
+  "ps_profile": "pooled-folded",
+  "qwen_deployed": {
+    "bytes": 491400032,
+    "filename": "qwen2.5-0.5b-instruct-q4_k_m.gguf",
+    "sha256": "74a4da8c9fdbcd15bd1f6d01d621410d31c6fc00986f5eb687824e7b93d7a9db"
+  },
+  "release_assets": {
+    "FZ3B-Board-V1.0.tar.gz": {
+      "bytes": 33515897,
+      "sha256": "06ac254f0019d830f08ce4f9221088527bda506a06b012e10296b187ad25c2ab"
+    },
+    "FZ3B-PL-V1.0.zip": {
+      "bytes": 4036407,
+      "sha256": "cb520956a559b79de88805035ab390da3fc76f25958be2a33af22d6bad048649"
+    },
+    "FZ3B-Windows-V1.0.zip": {
+      "bytes": 552377565,
+      "sha256": "c973b93d53cc0226959f2a472f40eac514d579693a4266daed573dca7355438b"
+    },
+    "FZ3B-Zipformer-INT8-Weights-V1.0.zip": {
+      "bytes": 26579279,
+      "sha256": "681f4121ae1eeef5811cea93ef6b259b1888b3ada15b5ba42a810586371c7b1a"
+    }
+  },
+  "routed_pl": {
+    "layer.bit": {
+      "bytes": 5568883,
+      "sha256": "9a64ad29991d1dc0fa83e04189112477ff3f11778de1c840ae83c59ada87c013"
+    },
+    "layer.xsa": {
+      "bytes": 2365836,
+      "sha256": "43f8275842eeaa3d9e2df902cbf50461b9f6d2c2096c6b09271a792713af41c8"
+    }
+  },
+  "tag": "V1.0",
+  "windows_build": "1.3"
+}

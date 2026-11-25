@@ -1,0 +1,33 @@
+{
+  "llama_cpp": "b11865",
+  "llama_cpp_source": "https://github.com/ggml-org/llama.cpp/releases/tag/b11865",
+  "llama_cpp_zip_sha256": "06be7290f2e86aec5e86bdc8afda50c211163b30c89d3e01726bfb3fc32552a4",
+  "model": "qwen2.5-0.5b-instruct-q4_k_m.gguf",
+  "model_sha256": "74a4da8c9fdbcd15bd1f6d01d621410d31c6fc00986f5eb687824e7b93d7a9db",
+  "model_source": "https://huggingface.co/Qwen/Qwen2.5-0.5B-Instruct-GGUF",
+  "runtime": {
+    "runtime/ggml-base.dll": "b30708d6b448be7c810e7f28f1d917656a564c4295d5144ca9e0594ef56228ff",
+    "runtime/ggml-cpu-alderlake.dll": "06a79316c438d25a9b20035891c87f744943a714f13787656a241dbeda377f39",
+    "runtime/ggml-cpu-cannonlake.dll": "8f58d0e8a2f16e794ac0c01fa456d4fd3d425b3faf4b880bce525282bd917e9c",
+    "runtime/ggml-cpu-cascadelake.dll": "fb425d5a90718423ca83b9131d0c64870fab9f25a4f37af8848468d53858477b",
+    "runtime/ggml-cpu-cooperlake.dll": "6da6fcd3a8016f842395482f671ea9974ef3bb208ea22ce3e62179dd900e9428",
+    "runtime/ggml-cpu-haswell.dll": "35bfa7478c09090fdd585aa33ea641faf1500c10849fe45e5ffa2957e5326954",
+    "runtime/ggml-cpu-icelake.dll": "20678cece58c0e3bd44bb7505de3ef3f6a7484228dbc517e3832d46af5579a26",
+    "runtime/ggml-cpu-ivybridge.dll": "ffcc601b521f626381876e7dabf4dd8e5fdb6d27b1ffda5ffac737731212978d",
+    "runtime/ggml-cpu-piledriver.dll": "ae453e126dda2999f88f70138ea01065528375dc0822304df88b8ba0d72fc490",
+    "runtime/ggml-cpu-sandybridge.dll": "24a523a259827f91e341d475902830ad61b47e78249e83a7f7c799e721d85b78",
+    "runtime/ggml-cpu-sapphirerapids.dll": "1dd6d46ba7944c1977d7c9f9c10b5c72e5a02c538c9837d1e8f3b0db2a285538",
+    "runtime/ggml-cpu-skylakex.dll": "9f61d9cf68aa2946be1d55d93de22851cea987c175692c80801edacdef303ba4",
+    "runtime/ggml-cpu-sse42.dll": "350e11bc659ac582e439f7f77a377029e6600e4d8ac32a337a4e09b3e6bd8424",
+    "runtime/ggml-cpu-x64.dll": "87314891efeb5a3c009ed49fe54f3e991587cd230a69d6e9650c63caf44f8c73",
+    "runtime/ggml-cpu-zen4.dll": "7e44108e043733576c4789bc1d6363502411fc51857cded34b7bdb5d86972142",
+    "runtime/ggml-rpc.dll": "ce2aa128997204e9e28471eb24e2202fbad4b6fd9686798da11a38fe4f9d481c",
+    "runtime/ggml.dll": "f2f7aa65bfb9d5ba82c4d62bc649220beb153c7521d5f1d1693ad9efc0295b89",
+    "runtime/libomp.dll": "a12116ba72d1d6820407cf30be23da04ce79d6bb8a71a5ee71759c5a1faa6f1c",
+    "runtime/llama-common.dll": "749a91dff03b4e8975ee15001cb349653cc209b2a916af6d16485ab97487a1da",
+    "runtime/llama-server-impl.dll": "12067f5f275798caae272b43a1cccdacc6a8456aa1cd4648686772855ec42dee",
+    "runtime/llama-server.exe": "ad448cb31fb7a8aed38f7c9da9008202d0b6d52b4c2951a377b102c9619f2901",
+    "runtime/llama.dll": "9721941facc29ba60915f68bfc26c16dac2b4448f90992c706b3be7bef066b11",
+    "runtime/mtmd.dll": "e1c71f237299026f50b86e0bb9fdbb8a274a41446a583a75aa07e1b56263c1ab"
+  }
+}

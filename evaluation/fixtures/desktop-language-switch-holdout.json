@@ -1,0 +1,15 @@
+{
+  "utterances": [
+    {"name":"zh-again","language":"zh","voice":"Microsoft Yaoyao","text":"这次用另外一段语音做检查。"},
+    {"name":"zh-command","language":"zh","voice":"Microsoft Kangkang","text":"请核对以下英文指令。"},
+    {"name":"zh-done","language":"zh","voice":"Microsoft Huihui","text":"现在已经完成第一项。"},
+    {"name":"en-position","language":"en","voice":"Microsoft Zira Desktop","text":"Keep the camera near the speaker."},
+    {"name":"en-signal","language":"en","voice":"Microsoft Zira Desktop","text":"Wait here until the light turns green."},
+    {"name":"en-window","language":"en","voice":"Microsoft Zira Desktop","text":"Close the window before you go."}
+  ],
+  "trials": [
+    {"name":"new-190","pieces":["zh-again","en-position"],"gaps_ms":[190]},
+    {"name":"new-520","pieces":["zh-command","en-signal"],"gaps_ms":[520]},
+    {"name":"new-reverse","pieces":["en-window","zh-done","en-position"],"gaps_ms":[300,400]}
+  ]
+}

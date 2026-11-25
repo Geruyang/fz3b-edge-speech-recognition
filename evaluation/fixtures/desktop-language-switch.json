@@ -1,0 +1,23 @@
+{
+  "utterances": [
+    {"name":"zh-status","language":"zh","voice":"Microsoft Huihui","text":"请听我说接下来的几个词。"},
+    {"name":"zh-release","language":"zh","voice":"Microsoft Kangkang","text":"新版本已经安装。"},
+    {"name":"zh-label","language":"zh","voice":"Microsoft Yaoyao","text":"请记下英文内容。"},
+    {"name":"zh-ready","language":"zh","voice":"Microsoft Huihui","text":"现在可以开始测试。"},
+    {"name":"zh-finish","language":"zh","voice":"Microsoft Kangkang","text":"请把结果保存在本地。"},
+    {"name":"en-desk","language":"en","voice":"Microsoft Zira Desktop","text":"Open the folder on the desktop."},
+    {"name":"en-report","language":"en","voice":"Microsoft Zira Desktop","text":"Please send the report before lunch."},
+    {"name":"en-coffee","language":"en","voice":"Microsoft Zira Desktop","text":"Would you like coffee or tea?"},
+    {"name":"en-bridge","language":"en","voice":"Microsoft Zira Desktop","text":"The bridge opens at noon."},
+    {"name":"en-file","language":"en","voice":"Microsoft Zira Desktop","text":"Save the final version as a text file."},
+    {"name":"en-light","language":"en","voice":"Microsoft Zira Desktop","text":"Turn off the lights when you leave."}
+  ],
+  "trials": [
+    {"name":"switch-130","pieces":["zh-status","en-desk"],"gaps_ms":[130]},
+    {"name":"switch-280","pieces":["zh-release","en-report"],"gaps_ms":[280]},
+    {"name":"switch-430","pieces":["zh-label","en-coffee"],"gaps_ms":[430]},
+    {"name":"switch-620","pieces":["zh-ready","en-bridge"],"gaps_ms":[620]},
+    {"name":"switch-950","pieces":["zh-finish","en-file"],"gaps_ms":[950]},
+    {"name":"switch-twice","pieces":["en-light","zh-release","en-desk"],"gaps_ms":[420,380]}
+  ]
+}

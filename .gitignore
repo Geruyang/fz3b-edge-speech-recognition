@@ -1,0 +1,14 @@
+__pycache__/
+*.pyc
+build/
+.venv/
+.Xil/
+*.jou
+*.log
+*.wav
+*.onnx
+*.gguf
+*.bit
+*.xsa
+*.dcp
+*.ko

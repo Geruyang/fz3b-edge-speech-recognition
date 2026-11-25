@@ -1,0 +1,415 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "FZAS v1 logical protocol values",
+  "description": "JSON projection of the binary headers, and the version-one payload structures defined by the shared contract.",
+  "$defs": {
+    "u64": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 18446744073709551615
+    },
+    "uuid": {
+      "type": "string",
+      "minLength": 36,
+      "maxLength": 36,
+      "pattern": "^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$"
+    },
+    "frame_header": {
+      "type": "object",
+      "required": [
+        "magic",
+        "version",
+        "message_type",
+        "payload_bytes",
+        "transport_seq",
+        "payload_crc32",
+        "flags",
+        "reserved"
+      ],
+      "properties": {
+        "magic": {
+          "const": "FZAS"
+        },
+        "version": {
+          "const": 1
+        },
+        "message_type": {
+          "enum": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8
+          ],
+          "$comment": "1=HELLO 2=REQUEST 3=RESPONSE 4=EVENT 5=PCM 6=FILE_CHUNK 7=ACK 8=HEARTBEAT"
+        },
+        "payload_bytes": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 262144
+        },
+        "transport_seq": {
+          "$ref": "#/$defs/u64"
+        },
+        "payload_crc32": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4294967295
+        },
+        "flags": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4294967295
+        },
+        "reserved": {
+          "const": 0
+        }
+      },
+      "additionalProperties": false,
+      "$comment": "Binary little-endian field offsets and widths in bytes: magic(0,4), version(4,2), message_type(6,2), payload_bytes(8,4), transport_seq(12,8), payload_crc32(20,4), flags(24,4), reserved(28,4). CRC32/IEEE applies to the payload. Frame and PCM length, CRC, and sample-extent checks require the binary codecs.",
+      "if": {
+        "properties": {
+          "message_type": {
+            "enum": [
+              5,
+              6
+            ]
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "payload_bytes": {
+            "maximum": 65536
+          }
+        }
+      }
+    },
+    "control_request": {
+      "type": "object",
+      "required": [
+        "protocol",
+        "request_id",
+        "op"
+      ],
+      "properties": {
+        "protocol": {
+          "const": 1
+        },
+        "request_id": {
+          "$ref": "#/$defs/uuid"
+        },
+        "op": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "session_id": {
+          "$ref": "#/$defs/uuid"
+        },
+        "last_applied_event_id": {
+          "$ref": "#/$defs/u64"
+        }
+      },
+      "additionalProperties": true,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "op": {
+                "enum": [
+                  "stop",
+                  "resume"
+                ]
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "session_id"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "op": {
+                "const": "resume"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "last_applied_event_id"
+            ]
+          }
+        }
+      ]
+    },
+    "control_response": {
+      "type": "object",
+      "required": [
+        "request_id",
+        "ok",
+        "code",
+        "state"
+      ],
+      "properties": {
+        "request_id": {
+          "$ref": "#/$defs/uuid"
+        },
+        "ok": {
+          "type": "boolean"
+        },
+        "code": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "state": {
+          "enum": [
+            "ready",
+            "recording",
+            "draining",
+            "finalized",
+            "refining",
+            "completed",
+            "faulted"
+          ]
+        },
+        "session_id": {
+          "$ref": "#/$defs/uuid"
+        },
+        "stop_sample": {
+          "$ref": "#/$defs/u64"
+        }
+      },
+      "additionalProperties": true
+    },
+    "transcript_event": {
+      "type": "object",
+      "required": [
+        "event_id",
+        "session_id",
+        "type",
+        "segment_id",
+        "revision",
+        "is_final",
+        "sample_start",
+        "sample_end",
+        "text",
+        "model_release",
+        "backend"
+      ],
+      "properties": {
+        "event_id": {
+          "$ref": "#/$defs/u64"
+        },
+        "session_id": {
+          "$ref": "#/$defs/uuid"
+        },
+        "type": {
+          "const": "transcript"
+        },
+        "segment_id": {
+          "$ref": "#/$defs/u64"
+        },
+        "revision": {
+          "$ref": "#/$defs/u64"
+        },
+        "is_final": {
+          "type": "boolean"
+        },
+        "sample_start": {
+          "$ref": "#/$defs/u64"
+        },
+        "sample_end": {
+          "$ref": "#/$defs/u64"
+        },
+        "text": {
+          "type": "string"
+        },
+        "model_release": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "backend": {
+          "enum": [
+            "cpu",
+            "pl",
+            "mixed"
+          ]
+        }
+      },
+      "additionalProperties": true,
+      "$comment": "event_id is session-scoped. revision is segment-scoped. Transport sequence belongs to the connection/channel header. Previous event, finality, and capture boundary require state-aware validation."
+    },
+    "session_snapshot": {
+      "type": "object",
+      "required": [
+        "snapshot_id",
+        "session_id",
+        "schema_version",
+        "ordered_segment_revisions",
+        "stop_sample",
+        "high_watermark",
+        "content_sha256",
+        "created_at",
+        "frozen",
+        "integrity"
+      ],
+      "properties": {
+        "snapshot_id": {
+          "$ref": "#/$defs/uuid"
+        },
+        "session_id": {
+          "$ref": "#/$defs/uuid"
+        },
+        "schema_version": {
+          "const": 1
+        },
+        "ordered_segment_revisions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "segment_id",
+              "revision"
+            ],
+            "properties": {
+              "segment_id": {
+                "$ref": "#/$defs/u64"
+              },
+              "revision": {
+                "$ref": "#/$defs/u64"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "stop_sample": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/u64"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "high_watermark": {
+          "$ref": "#/$defs/u64"
+        },
+        "content_sha256": {
+          "type": "string",
+          "minLength": 64,
+          "maxLength": 64,
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "frozen": {
+          "type": "boolean"
+        },
+        "integrity": {
+          "enum": [
+            "pending",
+            "complete",
+            "with_gaps",
+            "failed"
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "if": {
+        "properties": {
+          "frozen": {
+            "const": true
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "stop_sample": {
+            "$ref": "#/$defs/u64"
+          }
+        }
+      }
+    },
+    "timing_event": {
+      "type": "object",
+      "required": [
+        "name",
+        "clock_domain",
+        "monotonic_ns"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "clock_domain": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "monotonic_ns": {
+          "$ref": "#/$defs/u64"
+        }
+      },
+      "additionalProperties": false
+    },
+    "pcm_header": {
+      "type": "object",
+      "required": [
+        "session_uuid",
+        "sample_start",
+        "sample_count",
+        "audio_flags"
+      ],
+      "properties": {
+        "session_uuid": {
+          "$ref": "#/$defs/uuid"
+        },
+        "sample_start": {
+          "$ref": "#/$defs/u64"
+        },
+        "sample_count": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4294967295
+        },
+        "audio_flags": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4294967295
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "oneOf": [
+    {
+      "$ref": "#/$defs/frame_header"
+    },
+    {
+      "$ref": "#/$defs/control_request"
+    },
+    {
+      "$ref": "#/$defs/control_response"
+    },
+    {
+      "$ref": "#/$defs/transcript_event"
+    },
+    {
+      "$ref": "#/$defs/session_snapshot"
+    }
+  ]
+}

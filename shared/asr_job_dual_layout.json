@@ -1,0 +1,24 @@
+{
+  "schema": "edgespeech-zynqmp-asr-dual-ffn-v1",
+  "base_layout_sha256": "cf2dd5e0f737312b025e5b3a9d03f40864abb8c48032a967c9b6a2c3670288c6",
+  "wire_version": 3,
+  "user_abi": 4,
+  "dma_address_bits": 30,
+  "paired_calls": "FFN",
+  "rows": [2, 4, 8, 16],
+  "regions": ["weights", "scales", "bias", "input", "output", "old", "working", "scratch", "codes"],
+  "full_parameter_bytes": [393216, 4096, 4096],
+  "shards": [
+    {"operation": 3, "lane": 0, "phase": 1, "output_first_column": 0, "input_columns": 256, "output_columns": 384, "weight_offset_words": 0, "parameter_offset_floats": 0},
+    {"operation": 4, "lane": 1, "phase": 1, "output_first_column": 384, "input_columns": 256, "output_columns": 384, "weight_offset_words": 12288, "parameter_offset_floats": 384},
+    {"operation": 5, "lane": 0, "phase": 2, "output_first_column": 0, "input_columns": 768, "output_columns": 128, "weight_offset_words": 24576, "parameter_offset_floats": 768},
+    {"operation": 6, "lane": 1, "phase": 2, "output_first_column": 128, "input_columns": 768, "output_columns": 128, "weight_offset_words": 36864, "parameter_offset_floats": 896}
+  ],
+  "input_bytes_per_row": [1024, 1024, 3072, 3072],
+  "output_bytes_per_row": [1536, 1536, 512, 512],
+  "scratch_bytes_per_row": [1536, 1536, 512, 512],
+  "codes_bytes_per_row": [256, 256, 768, 768],
+  "stage_1": "global codes from identical complete input, W8 linear shard, scale, bias, activation",
+  "stage_2": "global codes from row-wise concatenated FP32 hidden, W8 linear shard, scale, bias",
+  "history": "split FFN has no old or working region; full Conv is committed by its lane at chunk commit"
+}

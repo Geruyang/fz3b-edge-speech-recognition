@@ -1,0 +1,538 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "FZBANK16 port profile and bandwidth report",
+  "description": "Profiles change bank ownership while preserving numeric pack and transport layout identity.",
+  "$defs": {
+    "u64": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 18446744073709551615
+    },
+    "profile": {
+      "type": "object",
+      "required": [
+        "port_profile_id",
+        "supported_hp_mask",
+        "active_hp_mask",
+        "profile_epoch",
+        "bank_to_hp",
+        "burst_beats",
+        "read_outstanding",
+        "write_outstanding",
+        "read_queue_depth",
+        "write_queue_depth"
+      ],
+      "properties": {
+        "port_profile_id": {
+          "enum": [
+            "hp2",
+            "hp3",
+            "hp4"
+          ]
+        },
+        "supported_hp_mask": {
+          "const": 15
+        },
+        "active_hp_mask": {
+          "enum": [
+            9,
+            11,
+            15
+          ]
+        },
+        "profile_epoch": {
+          "$ref": "#/$defs/u64"
+        },
+        "bank_to_hp": {
+          "type": "array",
+          "items": {
+            "enum": [
+              0,
+              1,
+              2,
+              3
+            ]
+          },
+          "minItems": 16,
+          "maxItems": 16
+        },
+        "burst_beats": {
+          "const": 16
+        },
+        "read_outstanding": {
+          "enum": [
+            8,
+            16
+          ]
+        },
+        "write_outstanding": {
+          "enum": [
+            8,
+            16
+          ]
+        },
+        "read_queue_depth": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 18446744073709551615
+        },
+        "write_queue_depth": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 18446744073709551615
+        }
+      },
+      "additionalProperties": false,
+      "oneOf": [
+        {
+          "properties": {
+            "port_profile_id": {
+              "const": "hp2"
+            },
+            "active_hp_mask": {
+              "const": 9
+            },
+            "bank_to_hp": {
+              "const": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                3,
+                3,
+                3,
+                3,
+                3,
+                3,
+                3,
+                3
+              ]
+            }
+          }
+        },
+        {
+          "properties": {
+            "port_profile_id": {
+              "const": "hp3"
+            },
+            "active_hp_mask": {
+              "const": 11
+            },
+            "bank_to_hp": {
+              "const": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                1,
+                1,
+                1,
+                1,
+                3,
+                3,
+                3,
+                3,
+                3,
+                3
+              ]
+            }
+          }
+        },
+        {
+          "properties": {
+            "port_profile_id": {
+              "const": "hp4"
+            },
+            "active_hp_mask": {
+              "const": 15
+            },
+            "bank_to_hp": {
+              "const": [
+                0,
+                0,
+                0,
+                0,
+                1,
+                1,
+                1,
+                1,
+                2,
+                2,
+                2,
+                2,
+                3,
+                3,
+                3,
+                3
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "asset_identity": {
+      "type": "object",
+      "required": [
+        "layout_id",
+        "layout_sha256",
+        "pack_version",
+        "pack_sha256"
+      ],
+      "properties": {
+        "layout_id": {
+          "const": "FZBANK16-v1"
+        },
+        "layout_sha256": {
+          "type": "string",
+          "minLength": 64,
+          "maxLength": 64,
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "pack_version": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "pack_sha256": {
+          "type": "string",
+          "minLength": 64,
+          "maxLength": 64,
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      },
+      "additionalProperties": false
+    },
+    "port_traffic_counters": {
+      "type": "object",
+      "required": [
+        "read_bytes",
+        "write_bytes",
+        "useful_weight_bytes",
+        "handshake_stall_cycles",
+        "read_outstanding_peak",
+        "write_outstanding_peak"
+      ],
+      "properties": {
+        "read_bytes": {
+          "$ref": "#/$defs/u64"
+        },
+        "write_bytes": {
+          "$ref": "#/$defs/u64"
+        },
+        "useful_weight_bytes": {
+          "$ref": "#/$defs/u64"
+        },
+        "handshake_stall_cycles": {
+          "type": "object",
+          "required": [
+            "AR",
+            "R",
+            "AW",
+            "W",
+            "B"
+          ],
+          "properties": {
+            "AR": {
+              "$ref": "#/$defs/u64"
+            },
+            "R": {
+              "$ref": "#/$defs/u64"
+            },
+            "AW": {
+              "$ref": "#/$defs/u64"
+            },
+            "W": {
+              "$ref": "#/$defs/u64"
+            },
+            "B": {
+              "$ref": "#/$defs/u64"
+            }
+          },
+          "additionalProperties": false,
+          "$comment": "Channels count valid && !ready cycles."
+        },
+        "read_outstanding_peak": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 16
+        },
+        "write_outstanding_peak": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 16
+        }
+      },
+      "additionalProperties": true
+    },
+    "bandwidth_round": {
+      "type": "object",
+      "required": [
+        "elapsed_ns",
+        "ps_time_ns",
+        "useful_weight_bytes",
+        "counter_epoch",
+        "port_traffic"
+      ],
+      "properties": {
+        "elapsed_ns": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 18446744073709551615
+        },
+        "ps_time_ns": {
+          "$ref": "#/$defs/u64"
+        },
+        "useful_weight_bytes": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 18446744073709551615
+        },
+        "counter_epoch": {
+          "$ref": "#/$defs/u64"
+        },
+        "port_traffic": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/port_traffic_counters"
+          },
+          "minItems": 4,
+          "maxItems": 4
+        }
+      },
+      "additionalProperties": true
+    },
+    "bandwidth_summary": {
+      "$comment": "P5 linearly interpolates the sorted round rates at zero-based index 0.05 * (sample_count - 1).",
+      "type": "object",
+      "required": [
+        "p5",
+        "median",
+        "min"
+      ],
+      "properties": {
+        "p5": {
+          "type": "number",
+          "minimum": 0
+        },
+        "median": {
+          "type": "number",
+          "minimum": 0
+        },
+        "min": {
+          "type": "number",
+          "minimum": 0
+        }
+      },
+      "additionalProperties": false
+    },
+    "bandwidth_report": {
+      "type": "object",
+      "required": [
+        "profile",
+        "layout_id",
+        "layout_sha256",
+        "pack_version",
+        "pack_sha256",
+        "bitstream_sha256",
+        "driver_sha256",
+        "model_release_id",
+        "clock_hz",
+        "ps_workload_id",
+        "ps_platform_config_sha256",
+        "rounds",
+        "measurement_kind",
+        "elapsed_time_domain"
+      ],
+      "properties": {
+        "profile": {
+          "$ref": "#/$defs/profile"
+        },
+        "layout_id": {
+          "const": "FZBANK16-v1"
+        },
+        "layout_sha256": {
+          "type": "string",
+          "minLength": 64,
+          "maxLength": 64,
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "pack_version": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "pack_sha256": {
+          "type": "string",
+          "minLength": 64,
+          "maxLength": 64,
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "bitstream_sha256": {
+          "type": "string",
+          "minLength": 64,
+          "maxLength": 64,
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "driver_sha256": {
+          "type": "string",
+          "minLength": 64,
+          "maxLength": 64,
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "model_release_id": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "clock_hz": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 18446744073709551615
+        },
+        "ps_workload_id": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "ps_platform_config_sha256": {
+          "type": "string",
+          "minLength": 64,
+          "maxLength": 64,
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "rounds": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/bandwidth_round"
+          },
+          "minItems": 1
+        },
+        "measurement_kind": {
+          "enum": [
+            "full_scan",
+            "integrated_reader_trace",
+            "whole_model"
+          ]
+        },
+        "elapsed_time_domain": {
+          "enum": [
+            "submit_to_scan_complete",
+            "reader_window_union",
+            "decode_step_wall"
+          ]
+        }
+      },
+      "additionalProperties": true,
+      "oneOf": [
+        {
+          "properties": {
+            "measurement_kind": {
+              "const": "full_scan"
+            },
+            "elapsed_time_domain": {
+              "const": "submit_to_scan_complete"
+            },
+            "scan_effective_weight_Bps": {
+              "$ref": "#/$defs/bandwidth_summary"
+            }
+          },
+          "required": [
+            "scan_effective_weight_Bps"
+          ],
+          "not": {
+            "anyOf": [
+              {
+                "required": [
+                  "transport_effective_weight_Bps"
+                ]
+              },
+              {
+                "required": [
+                  "model_weight_Bps"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "properties": {
+            "measurement_kind": {
+              "const": "integrated_reader_trace"
+            },
+            "elapsed_time_domain": {
+              "const": "reader_window_union"
+            },
+            "transport_effective_weight_Bps": {
+              "$ref": "#/$defs/bandwidth_summary"
+            }
+          },
+          "required": [
+            "transport_effective_weight_Bps"
+          ],
+          "not": {
+            "anyOf": [
+              {
+                "required": [
+                  "scan_effective_weight_Bps"
+                ]
+              },
+              {
+                "required": [
+                  "model_weight_Bps"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "properties": {
+            "measurement_kind": {
+              "const": "whole_model"
+            },
+            "elapsed_time_domain": {
+              "const": "decode_step_wall"
+            },
+            "model_weight_Bps": {
+              "$ref": "#/$defs/bandwidth_summary"
+            }
+          },
+          "required": [
+            "model_weight_Bps"
+          ],
+          "not": {
+            "anyOf": [
+              {
+                "required": [
+                  "scan_effective_weight_Bps"
+                ]
+              },
+              {
+                "required": [
+                  "transport_effective_weight_Bps"
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "$comment": "Each round binds useful payload separately from physical AXI traffic. Runtime checks reconcile the counters, time domain, and rates."
+    }
+  },
+  "oneOf": [
+    {
+      "$ref": "#/$defs/profile"
+    },
+    {
+      "$ref": "#/$defs/asset_identity"
+    },
+    {
+      "$ref": "#/$defs/bandwidth_report"
+    }
+  ]
+}

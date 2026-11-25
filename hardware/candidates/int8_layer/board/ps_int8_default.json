@@ -1,0 +1,15 @@
+{
+  "profile": "pooled-folded",
+  "embedding_threads": 4,
+  "layer_id": "0x51E36A2FAFB04A9B68924206",
+  "graphs": {
+    "decoder-epoch-99-avg-1.onnx": "d1f879baf3aa27a8c00e24ac24893363bb4ea37fed94f865ff30cabbca4560cd",
+    "joiner-epoch-99-avg-1.onnx": "b5ae3cb938ba578b57d5241e71d25907e9982aaba5e9380586a0b4566cdb2b1c",
+    "bridge-final.onnx": "3afffadefc17a6ecd873788c4139a482bf7a1e21d555d1a22836c5f05c16f268",
+    "embedding.onnx": "cbbdffcdf053cfaa1fe9ee77708cca706c914170381090b610505ceae967dfbe",
+    "bridge-s1l0.onnx": "facdec65072f59fee75a2e86c476de00381d96aab3de6fa4014093c813c8b107",
+    "bridge-s2l0.onnx": "fca182f3b9eb8d1b5b90c432a663b5feeafafe5ae8096116a3b0f8101084bde5",
+    "bridge-s3l0.onnx": "479ddca9a495058faf6ccac96480f875a765f31792169071e310fe8a260dd74b",
+    "bridge-s4l0.onnx": "1cf7a8ac47818eadd9440cfa06a2323f134a36b3960897056d0b78ad057b184b"
+  }
+}
